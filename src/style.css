@@ -1,0 +1,50 @@
+/* 第13-27行：重置样式 */
+/* 通配选择器 * 作用于所有元素 */
+* {
+  margin: 0; /* 清除外边距 */
+  padding: 0; /* 清除内边距 */
+  border: 0; /* 清除边框 */
+  outline: 0; /* 清除轮廓（如输入框聚焦时的轮廓） */
+  vertical-align: baseline; /* 设置垂直对齐方式为基线对齐 */
+  background: transparent; /* 设置背景透明 */
+}
+
+/* 第21-24行：设置所有链接（a元素）的样式 */
+a {
+  text-decoration: none; /* 去除下划线 */
+}
+
+/* 第25-27行：设置所有列表项（li元素）的样式 */
+li {
+  list-style: none; /* 去除项目符号（小圆点） */
+}
+
+/* 第29-31行：设置body元素的样式 */
+body {
+  height: 100vh; /* 设置body高度为视口高度（100vh） */
+  background-color: #f1f4f6; /* 设置背景颜色为淡灰色 */
+}
+
+#app {
+  height: 100%; /* 设置#app元素高度为100% */
+}
+
+/* 设置 .el-header 元素的样式 */
+.el-header {
+  /* 设置 .el-header 元素的高度为 50 像素，使用!important 确保优先级 */
+  height: 50px !important;
+  /* 设置 .el-header 元素的内边距为 0，使用!important 确保优先级 */
+  padding: 0 !important;
+  /* 为 .el-header 元素添加阴影效果，阴影颜色为 rgba(0, 0, 0, 0.05)，位置在元素底部 */
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+  /* 设置 .el-header 元素的底部边框为 1 像素的透明边框 */
+  border-bottom: 1px solid transparent;
+}
+
+.pagination-info {
+  padding: 10px 0;
+  background-color: #fff;
+  .el-pagination {
+    justify-content: end;
+  }
+}
