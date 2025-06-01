@@ -18,7 +18,7 @@
     <el-sub-menu
       v-else
       :index="`${props.index}-${item.meta.id}`"
-      @open="handleOpen"
+  
     >
       <template #title>
         <el-icon size="20">
