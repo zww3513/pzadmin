@@ -37,9 +37,12 @@
 
 <script setup>
 import {useRouter} from "vue-router"
+import {useStore} from "vuex"
 defineOptions({
   name: "TreeMenu",
 })
+
+const store = useStore()
 
 const props = defineProps(["menuData", "index"])
 console.log("menuData", props.menuData)
@@ -50,6 +53,8 @@ const router = useRouter()
 const handleClick = (item,active) => {
   console.log("item",item)
   console.log("active",active)
+  console.log("store",store)
+  store.commit('addMenu',item.meta)
   router.push(item.meta.path)
 }
 </script>
