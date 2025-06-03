@@ -13,6 +13,13 @@ const mutations = {
     // 如果存在，则不做任何操作；如果不存在，则将 payload 添加到 selectMenu 数组中
     state.selectMenu.find((item) => item.path === payload.path) ? "" : state.selectMenu.push(payload)
   },
+
+  closeMenu(state, payload) {
+    // 找到点击数据的索引
+    const index = state.selectMenu.findIndex(val => val.name === payload.name)
+    // 通过索引删除数组指定元素
+    state.selectMenu.splice(index, 1)
+  }
 }
 
 export default {

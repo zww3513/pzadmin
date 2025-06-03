@@ -6,7 +6,7 @@
       </el-icon>
       <ul class="flex-box">
         <li
-          v-for="(item, index) in slectMenu"
+          v-for="(item, index) in selectMenu"
           :key="item.path"
           class="tab flex-box"
           :class="{ selected: route.path === item.path }"
@@ -17,7 +17,7 @@
           <router-link class="text flex-box" :to="{ path: item.path }">
             {{ item.name }}
           </router-link>
-          <el-icon class="close" :size="12">
+          <el-icon class="close" :size="12" @click="closeTab(item, index)">
             <Close />
           </el-icon>
         </li>
@@ -46,13 +46,42 @@
 </template>
 
 <script setup>
-import { useRoute } from "vue-router"
+import { useRoute,useRouter } from "vue-router"
 import { useStore } from "vuex"
 import { computed } from "vue"
 const store = useStore()
 // 获取当前路由信息
 const route = useRoute()
-const slectMenu = computed(() => store.state.menu.selectMenu)
+// 路由跳转
+const router = useRouter()
+const selectMenu = computed(() => store.state.menu.selectMenu)
+
+// 关闭标签的逻辑
+const closeTab = (item, index) => {
+  console.log("item", item)
+  console.log("index", index)
+  // 关闭当前标签
+  store.commit("closeMenu", item)
+  // 删除非当前标签
+  if (route.path !== item.path) {
+    return
+  }
+  const selectMenuData = selectMenu.value
+  console.log("selectMenuData", selectMenuData)
+  // 当前页是最后一个标签
+  if (index === selectMenuData.length) {
+    if (index == 0) {
+      router.push({ path: "/" })
+      return
+    }
+    // 跳转到上一个标签
+    router.push({ path: selectMenuData[index - 1].path })
+  }
+  // 当前页不是最后一个标签
+  else {
+    router.push({ path: selectMenuData[index].path })
+  }
+}
 </script>
 
 <style lang="less" scoped>
