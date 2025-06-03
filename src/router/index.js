@@ -77,6 +77,10 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/login',
+    component: () => import('@/view/login/index.vue'),
+  },
 ]
 
 const router = createRouter({
