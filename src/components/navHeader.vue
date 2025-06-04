@@ -10,6 +10,7 @@
           :key="item.path"
           class="tab flex-box"
           :class="{ selected: route.path === item.path }"
+          @contextmenu.prevent="showContextMenu($event, item, index)"
         >
           <el-icon :size="12">
             <component :is="item.icon"></component>
@@ -22,6 +23,15 @@
           </el-icon>
         </li>
       </ul>
+    </div>
+    <!-- 右键菜单 -->
+    <div
+      v-if="contextMenuVisible"
+      class="context-menu"
+      :style="{ left: contextMenuX + 'px', top: contextMenuY + 'px' }"
+    >
+      <div class="menu-item" @click="closeAllTabs">关闭全部</div>
+      <div class="menu-item" @click="closeRightTabs">关闭右侧</div>
     </div>
     <div class="header-right">
       <el-dropdown>
@@ -46,42 +56,67 @@
 </template>
 
 <script setup>
-import { useRoute,useRouter } from "vue-router"
-import { useStore } from "vuex"
-import { computed } from "vue"
-const store = useStore()
-// 获取当前路由信息
-const route = useRoute()
-// 路由跳转
-const router = useRouter()
-const selectMenu = computed(() => store.state.menu.selectMenu)
+import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { computed, ref } from "vue";
 
-// 关闭标签的逻辑
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
+const selectMenu = computed(() => store.state.menu.selectMenu);
+
+// 右键菜单相关变量
+const contextMenuVisible = ref(false);
+const contextMenuX = ref(0);
+const contextMenuY = ref(0);
+const currentMenuItem = ref(null);
+
+// 显示右键菜单
+const showContextMenu = (event, item, index) => {
+  event.preventDefault();
+  contextMenuVisible.value = true;
+  contextMenuX.value = event.clientX;
+  contextMenuY.value = event.clientY;
+  currentMenuItem.value = { item, index };
+};
+
+// 关闭当前标签
 const closeTab = (item, index) => {
-  console.log("item", item)
-  console.log("index", index)
-  // 关闭当前标签
-  store.commit("closeMenu", item)
-  // 删除非当前标签
-  if (route.path !== item.path) {
-    return
-  }
-  const selectMenuData = selectMenu.value
-  console.log("selectMenuData", selectMenuData)
-  // 当前页是最后一个标签
+  console.log("item", item);
+  console.log("index", index);
+  store.commit("closeMenu", item);
+  if (route.path !== item.path) return;
+  const selectMenuData = selectMenu.value;
   if (index === selectMenuData.length) {
-    if (index == 0) {
-      router.push({ path: "/" })
-      return
+    if (index === 0) {
+      router.push({ path: "/" });
+      return;
     }
-    // 跳转到上一个标签
-    router.push({ path: selectMenuData[index - 1].path })
+    router.push({ path: selectMenuData[index - 1].path });
+  } else {
+    router.push({ path: selectMenuData[index].path });
   }
-  // 当前页不是最后一个标签
-  else {
-    router.push({ path: selectMenuData[index].path })
-  }
-}
+};
+
+// 关闭全部标签
+const closeAllTabs = () => {
+  store.commit("closeAllMenus");
+  contextMenuVisible.value = false;
+  router.push({ path: "/" });
+};
+
+// 关闭右侧标签
+const closeRightTabs = () => {
+  if (!currentMenuItem.value) return;
+  const { index } = currentMenuItem.value;
+  store.commit("closeRightMenus", index);
+  contextMenuVisible.value = false;
+};
+
+// 点击其他地方隐藏右键菜单
+document.addEventListener("click", () => {
+  contextMenuVisible.value = false;
+});
 </script>
 
 <style lang="less" scoped>
@@ -148,6 +183,23 @@ const closeTab = (item, index) => {
     height: 100%;
     color: #333;
     font-size: 15px;
+  }
+}
+
+/* 右键菜单样式 */
+.context-menu {
+  position: fixed;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
+
+.menu-item {
+  padding: 5px 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f5f5f5;
   }
 }
 </style>

@@ -19,6 +19,18 @@ const mutations = {
     const index = state.selectMenu.findIndex(val => val.name === payload.name)
     // 通过索引删除数组指定元素
     state.selectMenu.splice(index, 1)
+  },
+
+  // 新增：关闭右侧标签页
+  closeRightMenus(state, index) {
+    if (index >= 0 && index < state.selectMenu.length) {
+      state.selectMenu.splice(index + 1)
+    }
+  },
+
+  // 新增：关闭所有标签页
+  closeAllMenus(state) {
+    state.selectMenu = []
   }
 }
 
